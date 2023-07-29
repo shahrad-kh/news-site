@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 
-app_name = 'api'
+app_name = 'news'
 
 urlpatterns = [
     path('news/', views.NewsListAPI.as_view(), name="news_page"),
