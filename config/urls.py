@@ -22,6 +22,6 @@ from rest_framework.schemas import get_schema_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('news.urls')),
-    path('schema', get_schema_view(title='News API'), name='api_schema'),
+    path('schema/', get_schema_view(title='News API'), name='api_schema'),
     path('swagger-ui/', TemplateView.as_view(template_name='docs.html')),
 ]
