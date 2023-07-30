@@ -64,3 +64,14 @@ class NewsListTest(TestCase):
         
         # Checks the equality of test_news id and object in response data
         self.assertEqual(self.news['id'], dict(response.data)['id'])
+        
+    
+    def test_news_detail_Not_found(self):
+        url = reverse("news:detail_page_by_pk", kwargs={'pk': self.news['id'] + 1})
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(len(response.data), 1)
+        
+        # Checks response contains Not found
+        self.assertEqual({"detail": "Not found."}, dict(response.data))
