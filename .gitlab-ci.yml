@@ -1,14 +1,14 @@
 image: python:3.8
 
 stages:
-  - deploy
+  - test
 
 
-deploy-project:
-  stage: deploy
+test-project:
+  stage: test
   script:
     - mkdir /src
     - cd /src
     - git clone https://gitlab.roshan-ai.ir/shahrad-kh/news_site.git
     - cd news_site
-    - docker-compose up --build -d
+    - python manage.py test
