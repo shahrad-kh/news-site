@@ -1,0 +1,14 @@
+image: python:3.9
+
+stages:
+  - deploy
+
+
+deploy-project:
+  stage: deploy
+  script:
+    - mkdir /src
+    - cd /src
+    - git clone https://gitlab.com/shahrad-kh/test.git
+    - cd test
+    - docker-compose up --build -d
