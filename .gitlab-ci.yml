@@ -9,6 +9,6 @@ deploy-project:
   script:
     - mkdir /src
     - cd /src
-    - git clone https://gitlab.com/shahrad-kh/test.git
-    - cd test
+    - git clone https://gitlab.roshan-ai.ir/shahrad-kh/news_site.git
+    - cd news_site
     - docker-compose up --build -d
