@@ -11,4 +11,5 @@ test-project:
     - cd /src
     - git clone https://gitlab.roshan-ai.ir/shahrad-kh/news_site.git
     - cd news_site
+    - pip install -r requirements.txt
     - python manage.py test
