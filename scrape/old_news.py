@@ -1,77 +1,109 @@
-import json
-import time
+import os
 
 import chromedriver_autoinstaller
+import django
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+django.setup()
 
-def write_to_file(News: list):
+from news.models import News, Tag
+
+
+def create_instance(news_list: list):
     """
-    this function gets all news data and writes them in a json file
+    creates News instance using scraped data
 
     Args:
-        News (list): all news data
+        news_list (list): list of dictionaries included news fields
     """
     
-    data = {'News': News}
-    
-    with open('./news.json', 'a+', encoding='utf-8') as f:
-        json.dump(data, f)
-
-
+    for news in news_list:
+        # Try to create new news
+        try:
+            new_instance = News.objects.create(
+                title = news['title'],
+                content = news['content'],
+                source = news['source']
+            )
+            
+            tags = []
+            for news_tag in news['tags']:
+                
+                # Try to create new tag if it doesn't exist
+                try:
+                    tag = Tag.objects.create(title=news_tag)
+                except:
+                    tag = Tag.objects.filter(title=news_tag).first()
+                
+                tags.append(tag)
+                
+            new_instance.tags.set(tags)
+        
+        except:
+            continue 
+        
+        
 def scrape_news_via_link(driver: webdriver, links: list):
-    """this function gets all news links and scrape to return news data
+    """
+    this function gets old news links and scrape to return news data
 
     Args:
         driver (webdriver): chrome webdriver
-        links (list): all news links
+        links (list): old news links
 
     Returns:
-        list: all news data like title, tags, ....
+        list: old news data like title, tags, ....
     """
     
-    News = []
+    news_list = []
     for link in links:
         # To try get news page using link and get news data
         try:
             driver.get(link)
             news = {}
             news['title'] = driver.find_element(By.CSS_SELECTOR, ".eNoCZh").text
+            
+            # To check if News already exist in database
+            if News.objects.filter(title=news['title']):
+                continue
+            
             news['tags'] = [tag.text for tag in driver.find_elements(By.CSS_SELECTOR, ".eMeOeL")]
             news['source'] = link
             
             sentences = [str(sentence.text) for sentence in \
                 driver.find_elements(By.CSS_SELECTOR, ".dfnkIg > \
                 .typography__StyledDynamicTypographyComponent-t787b7-0")]
-            news['content'] =  '\n'.join(sentences)    
+            news['content'] =  ' '.join(sentences)    
                 
-            News.append(news)
+            news_list.append(news)
             
         except:
             continue
     
-    return News
+    return news_list
 
 
 def get_news_links(driver: webdriver, url: str):
-    """this function gets website url and returns all news links
+    """
+    this function gets website url and returns old news links
 
     Args:
         driver (webdriver): chrome webdriver
         url (str): website url
 
     Returns:
-        list: all news links
+        list: old news links
     """
     
     driver.get(url)
     
     # To click on see_more button
-    for t in range(5):
+    for t in range(7):
         try:
             more_button = WebDriverWait(driver, 3).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ")))
@@ -81,7 +113,7 @@ def get_news_links(driver: webdriver, url: str):
             print(e)
             continue
     
-    # To get all news elements
+    # To get all old_news elements
     try:   
         elements = WebDriverWait(driver, 5).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".iCQspp")))
@@ -90,9 +122,9 @@ def get_news_links(driver: webdriver, url: str):
         print('failed to get elements...')
         print(e)
     
-    # To get all news links
+    # To get all old_news links
     links = []
-    for element in elements:
+    for element in elements[30:]:
         link = element.get_attribute('href')
         if not link.startswith('https://www.zoomg.ir/'):
             links.append(link)
@@ -112,17 +144,18 @@ if __name__ == '__main__':
     # Install ChromeDriver using autoinstaller
     chromedriver_autoinstaller.install()
     
-    # Step_1: get all news links
+    # Step_1: get all old_news links
     driver = webdriver.Chrome(options=chrome_options)
     url = "https://www.zoomit.ir/archive/?sort=Newest"
     links = get_news_links(driver, url)
     driver.close()
     
-    # Step_2: scrape news
+    # Step_2: scrape old_news
     driver = webdriver.Chrome(options=chrome_options)
-    News = scrape_news_via_link(driver, links)
+    news_list = scrape_news_via_link(driver, links)
+
     driver.close()
     
-    # Step3: writing data in a json file
-    write_to_file(News)
+    # Step3: create News instance
+    create_instance(news_list)
     print('Done!')
