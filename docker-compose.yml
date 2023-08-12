@@ -1,9 +1,51 @@
-version: '3.9'
+version: '3.7'
 
 services:
+  celery:
+    build: .
+    container_name: celery
+    command: >
+      sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
+             python manage.py migrate &&
+             cd news &&
+             apt-get update &&
+             apt-get upgrade -y &&
+             apt-get install -y wget &&
+             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&
+             apt-get install gdebi-core -y &&
+             gdebi --n google-chrome-stable_current_amd64.deb &&
+             celery -A tasks beat -l info &&
+             celery -A tasks worker -l info"
+    links:
+      - redis
+    networks:
+      - main
+    depends_on:
+      - redis
+      - app
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - '6379:6379'
+    networks:
+      - main
+
   app:
     build: .
-    command: sh -c "python manage.py migrate && gunicorn config.wsgi -b 0.0.0.0:8000"
+    command: >
+      sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
+             python manage.py test &&
+             python manage.py migrate &&
+             apt-get update &&
+             apt-get upgrade -y &&
+             apt-get install -y wget &&
+             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&
+             apt-get install gdebi-core -y &&
+             gdebi --n google-chrome-stable_current_amd64.deb &&
+             python scrape/old_news.py &&
+             gunicorn config.wsgi -b 0.0.0.0:8000"
     container_name: app
     volumes:
       - .:/code/
@@ -11,9 +53,10 @@ services:
       - "8000:8000"
     networks:
       - main
+    links:
+      - redis
     restart: always
-
-  
+    
   nginx:
     container_name: nginx
     command: nginx -g "daemon off;"
