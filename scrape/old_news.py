@@ -153,7 +153,6 @@ if __name__ == '__main__':
     # Step_2: scrape old_news
     driver = webdriver.Chrome(options=chrome_options)
     news_list = scrape_news_via_link(driver, links)
-
     driver.close()
     
     # Step3: create News instance
