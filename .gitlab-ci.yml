@@ -1,24 +1,26 @@
-image: python:3.8
+default:
+  image: docker
+
+services:
+  - docker:dind
 
 stages:
-  - test
+  - deploy
 
 before_script:
-  - apt-get update 
-  - apt-get upgrade -y
-  - mkdir /src
-  - cd /src
-  - apt-get install -y wget
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - apt-get install gdebi-core -y
-  - gdebi --n google-chrome-stable_current_amd64.deb
+  - docker --version
+  - docker-compose --version
+  - apk add --no-cache git
+  - mkdir src
+  - cd src
   - git clone https://gitlab.roshan-ai.ir/shahrad-kh/news_site.git
   - cd news_site
-  - pip install -r requirements.txt
 
-test-project:
-  stage: test
+
+deploy-project:
+  stage: deploy
   script:
-    - python manage.py test
-    - cd scrape
-    - python scrape.py
+    - docker-compose up --build -d
+
+after_script:
+  - docker-compose down
