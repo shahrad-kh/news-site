@@ -8,14 +8,11 @@ stages:
   - deploy
 
 before_script:
-  - docker --version
-  - docker-compose --version
   - apk add --no-cache git
   - mkdir src
   - cd src
   - git clone https://gitlab.roshan-ai.ir/shahrad-kh/news_site.git
   - cd news_site
-
 
 deploy-project:
   stage: deploy
