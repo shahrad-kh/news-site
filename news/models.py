@@ -29,3 +29,12 @@ class News(models.Model):
     
     def __str__(self):
         return self.title
+    
+    
+    @property
+    def tags_indexing(self):
+        """
+        Tags for indexing.
+        Used in Elasticsearch indexing.
+        """
+        return [tag.title for tag in self.tags.all()]
