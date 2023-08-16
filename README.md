@@ -7,25 +7,14 @@ This project is a news site built with Django. It provides a set of APIs for man
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Prerequisites
-
-- Python
-- Docker (optional)
-
 ### Installation
 
 1. Clone the repository to your local machine.
 
 2. Navigate to the project directory.
 
-3. You have two options to run the project: 
-    - Using Docker:
-        ``` docker-compose up --build -d```
-
-    - Using Python:
-        - Make migrations and run the project:
-            ``` python manage.py migrate```
-            ``` python mange.py runserver```
+3. You can run the project using Docker:
+    ``` docker-compose up --build -d```
 
 ## API Documentation
 
