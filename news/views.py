@@ -4,7 +4,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from .documents import NewsDocument
 from .models import News
-from .serializers import NewsSerializer
+from .serializers import NewsSerializer, NewsDocumentSerializer
 
 
 class NewsListAPI(ListAPIView):
