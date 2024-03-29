@@ -76,7 +76,7 @@ def scrape_news_via_link(driver: webdriver, links: list):
             news['source'] = link
             
             sentences = [str(sentence.text) for sentence in \
-                driver.find_elements(By.CSS_SELECTOR, ".dfnkIg > \
+                driver.find_elements(By.CSS_SELECTOR, ".hXzioD > \
                 .typography__StyledDynamicTypographyComponent-t787b7-0")]
             news['content'] =  ' '.join(sentences)    
                 
@@ -105,7 +105,7 @@ def get_news_links(driver: webdriver, url: str):
     # To click on see_more button
     for t in range(7):
         try:
-            more_button = WebDriverWait(driver, 3).until(
+            more_button = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ")))
             more_button.click()
 
@@ -115,8 +115,9 @@ def get_news_links(driver: webdriver, url: str):
     
     # To get all old_news elements
     try:   
-        elements = WebDriverWait(driver, 5).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".iCQspp")))
+        elements = WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, \
+                ".link__CustomNextLink-sc-1r7l32j-0.eoKbWT.BrowseArticleListItemDesktop__WrapperLink-zb6c6m-6.bzMtyO")))
     
     except Exception as e:
         print('failed to get elements...')
@@ -126,7 +127,7 @@ def get_news_links(driver: webdriver, url: str):
     links = []
     for element in elements[30:]:
         link = element.get_attribute('href')
-        if not link.startswith('https://www.zoomg.ir/'):
+        if str(link).startswith('https://www.zoomit.ir/'):
             links.append(link)
     
     return links
