@@ -11,5 +11,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_HUB_USERNAME }}" | docker login -u ${{ secrets.DOCKER_HUB_PASSWORD }} --password-stdin
+      
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag news-site:$(date +%s)
+
+    - name: Push the Docker image
+      run: |
+        docker tag news-site:$(date +%s) ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:$(date +%s)
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:$(date +%s)
