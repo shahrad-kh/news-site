@@ -17,9 +17,11 @@ jobs:
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag news-site:$(date +%s)
+        run: |
+          VERSION=$(date +%Y%m%d%H%M%S) # Use the current timestamp as build metadata
+          docker build. --file Dockerfile --tag news-site:$VERSION
 
       - name: Push the Docker image
         run: |
-          docker tag news-site:$(date +%s) ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:$(date +%s)
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:$(date +%s)
+          docker tag news-site:$VERSION ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:$VERSION
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:$VERSION
