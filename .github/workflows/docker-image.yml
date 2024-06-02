@@ -21,8 +21,13 @@ jobs:
         run: echo "VERSION=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
       - name: Build the Docker image
-        run: docker build -f Dockerfile --tag news-site:${{ env.VERSION }}
-
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: news-site:${{ env.VERSION }}
+       
       - name: Push the Docker image
         run: |
           docker tag news-site:${{ env.VERSION }} ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:${{ env.VERSION }}
