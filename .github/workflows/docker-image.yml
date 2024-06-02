@@ -29,8 +29,3 @@ jobs:
           context: .
           push: true
           tags: news-site:${{ env.VERSION }}
-       
-      - name: Push the Docker image
-        run: |
-          docker tag news-site:${{ env.VERSION }} ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:${{ env.VERSION }}
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/news-site:${{ env.VERSION }}
