@@ -84,7 +84,6 @@ def scrape_news_via_link(driver: webdriver, links: list):
         except:
             continue
     
-    print(news_list)
     return news_list
 
 
