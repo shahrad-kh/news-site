@@ -66,7 +66,7 @@ def scrape_news_via_link(driver: webdriver, links: list):
         try:
             driver.get(link)
             news = {}
-            news['title'] = driver.find_element(By.CSS_SELECTOR, ".eNoCZh").text
+            news['title'] = driver.find_element(By.CSS_SELECTOR, ".hwtfkB").text
             
             # To check if News already exist in database
             if News.objects.filter(title=news['title']):
@@ -78,13 +78,13 @@ def scrape_news_via_link(driver: webdriver, links: list):
             sentences = [str(sentence.text) for sentence in \
                 driver.find_elements(By.CSS_SELECTOR, ".hXzioD > \
                 .typography__StyledDynamicTypographyComponent-t787b7-0")]
-            news['content'] =  ' '.join(sentences)    
-                
+            news['content'] = ' '.join(sentences)
             news_list.append(news)
             
         except:
             continue
     
+    print(news_list)
     return news_list
 
 
@@ -106,8 +106,9 @@ def get_news_links(driver: webdriver, url: str):
     for t in range(7):
         try:
             more_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ .eEklvK")))
             more_button.click()
+            print('click')
 
         except Exception as e:
             print(e)
@@ -118,7 +119,6 @@ def get_news_links(driver: webdriver, url: str):
         elements = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, \
                 ".link__CustomNextLink-sc-1r7l32j-0.eoKbWT.BrowseArticleListItemDesktop__WrapperLink-zb6c6m-6.bzMtyO")))
-    
     except Exception as e:
         print('failed to get elements...')
         print(e)

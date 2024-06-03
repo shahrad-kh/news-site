@@ -68,7 +68,7 @@ def scrape_news_via_link(driver: webdriver, links: list):
         try:
             driver.get(link)
             news = {}
-            news['title'] = driver.find_element(By.CSS_SELECTOR, ".eNoCZh").text
+            news['title'] = driver.find_element(By.CSS_SELECTOR, ".hwtfkB").text
             
             # To check if News already exist in database
             if News.objects.filter(title=news['title']):
