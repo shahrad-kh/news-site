@@ -25,6 +25,7 @@ def create_instance(news_list: list):
     for news in news_list:
         # Try to create new news
         try:
+            print("trying to create instance")
             new_instance = News.objects.create(
                 title = news['title'],
                 content = news['content'],
@@ -41,8 +42,10 @@ def create_instance(news_list: list):
                     tag = Tag.objects.filter(title=news_tag).first()
                 
                 tags.append(tag)
+                print("tags appended")
                 
             new_instance.tags.set(tags)
+            print("news instance created")
         
         except:
             continue 
@@ -84,6 +87,8 @@ def scrape_news_via_link(driver: webdriver, links: list):
         except:
             continue
     
+    if news_list:
+        print("news_list is not None")
     return news_list
 
 
@@ -102,33 +107,41 @@ def get_news_links(driver: webdriver, url: str):
     driver.get(url)
     
     # To click on see_more button
-    for t in range(7):
+    for t in range(3):
         try:
             more_button = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ .eEklvK")))
             more_button.click()
-            print('click')
 
         except Exception as e:
             print(e)
             continue
     
-    # To get all old_news elements
+    print("clicking done!")
+    
+    # To get all old_news elements    
     try:   
         elements = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, \
                 ".link__CustomNextLink-sc-1r7l32j-0.eoKbWT.BrowseArticleListItemDesktop__WrapperLink-zb6c6m-6.bzMtyO")))
+        
     except Exception as e:
         print('failed to get elements...')
         print(e)
+        
+    if elements:
+        print('elements is not None')
     
     # To get all old_news links
     links = []
-    for element in elements[30:]:
+    for element in elements[:20]:
         link = element.get_attribute('href')
         if str(link).startswith('https://www.zoomit.ir/'):
             links.append(link)
     
+    if links:
+        print('links is not None')
+        
     return links
 
 

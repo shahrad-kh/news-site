@@ -141,7 +141,8 @@ REST_FRAMEWORK = {
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'elasticsearch:9200',
+        # 'hosts': 'elasticsearch:9200',
+        'hosts': 'http://199.247.21.67:9200'
     },
 }
 

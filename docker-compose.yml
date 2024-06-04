@@ -68,7 +68,9 @@ services:
              gdebi --n google-chrome-stable_current_amd64.deb &&
              echo "step5"
              python scrape/old_news.py &&
+             echo "step6"
              gunicorn config.wsgi -b 0.0.0.0:8000"
+             echo "step7"
     container_name: app
     volumes:
       - .:/code/
