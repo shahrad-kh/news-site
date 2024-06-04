@@ -52,7 +52,7 @@ services:
   app:
     build: .
     command: >
-      sh -c "export PYTHONPATH=$PYTHONPATH:${PWD} &&
+      sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
              python manage.py migrate &&
              python manage.py search_index --create -f &&
              python manage.py search_index --populate -f &&
