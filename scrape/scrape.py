@@ -110,9 +110,9 @@ def get_news_links(driver: webdriver, url: str):
     driver.get(url)
     
     # To click on see_more button
-    for t in range(2):
+    for t in range(5):
         try:
-            more_button = WebDriverWait(driver, 3).until(
+            more_button = WebDriverWait(driver, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ .eEklvK")))
             more_button.click()
             print("click")
@@ -133,7 +133,7 @@ def get_news_links(driver: webdriver, url: str):
     
     # To get all news links
     links = []
-    for element in elements[:10]:
+    for element in elements:
         link = element.get_attribute('href')
         if not link.startswith('https://www.zoomg.ir/'):
             links.append(link)

@@ -1,10 +1,10 @@
-FROM python:3.8
+FROM python:3
 
 WORKDIR /code
 
 COPY requirements.txt /code/
 
-RUN pip install -r requirements.txt --no-cache-dir
+RUN pip install -r requirements.txt
 
 COPY . /code/
 

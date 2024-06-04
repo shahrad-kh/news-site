@@ -1,9 +1,19 @@
-version: '3.9'
+version: '3.7'
 
 services:
   app:
     build: .
-    command: sh -c "python manage.py migrate && gunicorn config.wsgi -b 0.0.0.0:8000"
+    command: >
+      sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
+             python manage.py migrate &&
+             apt-get update &&
+             apt-get upgrade -y &&
+             apt-get install -y wget &&
+             apt-get install gdebi-core -y &&
+             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&
+             gdebi --n google-chrome-stable_current_amd64.deb &&
+             python scrape/scrape.py &&
+             gunicorn config.wsgi -b 0.0.0.0:8000"
     container_name: app
     volumes:
       - .:/code/
@@ -23,7 +33,7 @@ services:
     networks:
       - main
     ports:
-      - "80:80"
+      - "8080:80"
     restart: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
