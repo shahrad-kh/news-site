@@ -53,15 +53,20 @@ services:
     build: .
     command: >
       sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
+             echo "step1"
              python manage.py migrate &&
+             echo "step2"
              python manage.py search_index --create -f &&
+             echo "step3"
              python manage.py search_index --populate -f &&
+             echo "step4"
              apt-get update &&
              apt-get upgrade -y &&
              apt-get install -y wget &&
              apt-get install gdebi-core -y &&
              wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&
              gdebi --n google-chrome-stable_current_amd64.deb &&
+             echo "step5"
              python scrape/old_news.py &&
              gunicorn config.wsgi -b 0.0.0.0:8000"
     container_name: app
