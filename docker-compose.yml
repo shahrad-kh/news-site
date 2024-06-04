@@ -16,45 +16,44 @@ services:
       - main
     restart: always
   
-  celery:
-    build: .
-    container_name: celery
-    command: >
-      sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
-             cd news &&
-             apt-get update &&
-             apt-get upgrade -y &&
-             apt-get install -y wget &&
-             apt-get install gdebi-core -y &&
-             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&
-             gdebi --n google-chrome-stable_current_amd64.deb &&
-             celery -A tasks beat -l info &&
-             celery -A tasks worker -l info"
-    links:
-      - redis
-    networks:
-      - main
-    depends_on:
-      - redis
-      - app
-      - elasticsearch
-    restart: always
+  # celery:
+  #   build: .
+  #   container_name: celery
+  #   command: >
+  #     sh -c "export PYTHONPATH=$PYTHONPATH:${PWD} &&
+  #            cd news &&
+  #            apt-get update &&
+  #            apt-get upgrade -y &&
+  #            apt-get install -y wget &&
+  #            apt-get install gdebi-core -y &&
+  #            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&
+  #            gdebi --n google-chrome-stable_current_amd64.deb &&
+  #            celery -A tasks beat -l info &&
+  #            celery -A tasks worker -l info"
+  #   links:
+  #     - redis
+  #   networks:
+  #     - main
+  #   depends_on:
+  #     - redis
+  #     - app
+  #     - elasticsearch
+  #   restart: always
 
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-    networks:
-      - main
-    restart: always
+  # redis:
+  #   image: redis:latest
+  #   container_name: redis
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - main
+  #   restart: always
 
   app:
     build: .
     command: >
-      sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
+      sh -c "export PYTHONPATH=$PYTHONPATH:${PWD} &&
              python manage.py migrate &&
-             sleep 300 &&
              python manage.py search_index --create -f &&
              python manage.py search_index --populate -f &&
              apt-get update &&
@@ -72,8 +71,8 @@ services:
       - "8000:8000"
     networks:
       - main
-    links:
-      - redis
+    # links:
+    #   - redis
     depends_on:
       - elasticsearch
     restart: always
