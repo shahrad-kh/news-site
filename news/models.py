@@ -20,6 +20,7 @@ class News(models.Model):
     title = models.CharField(max_length=50, unique=True)
     content = models.TextField()
     tags = models.ManyToManyField(Tag)
+    photo_link = models.CharField(max_length=50)
     source = models.CharField(max_length=50)
     
     class Meta:

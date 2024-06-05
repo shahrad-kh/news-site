@@ -32,7 +32,8 @@ def create_instance(news_list: list):
             new_instance = News.objects.create(
                 title = news['title'],
                 content = news['content'],
-                source = news['source']
+                photo_link = news['photo_link'],
+                source = news['source'],
             )
             
             tags = []
@@ -80,6 +81,8 @@ def scrape_news_via_link(driver: webdriver, links: list):
                 continue
             
             news['tags'] = [tag.text for tag in driver.find_elements(By.CSS_SELECTOR, ".eMeOeL")]
+            photo = driver.find_element(By.CSS_SELECTOR, ".Dqwcd")
+            news['photo_link'] = photo.get_attribute('src')
             news['source'] = link
             
             sentences = [str(sentence.text) for sentence in \
