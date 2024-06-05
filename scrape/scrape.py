@@ -114,7 +114,7 @@ def get_news_links(driver: webdriver, url: str):
     # To click on see_more button
     for t in range(3):
         try:
-            more_button = WebDriverWait(driver, 10).until(
+            more_button = WebDriverWait(driver, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ .eEklvK")))
             more_button.click()
             print("click")
