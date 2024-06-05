@@ -1,4 +1,5 @@
 import os
+import time
 
 import chromedriver_autoinstaller
 import django
@@ -70,6 +71,7 @@ def scrape_news_via_link(driver: webdriver, links: list):
         # To try get news page using link and get news data
         try:
             driver.get(link)
+            time.sleep(3)
             news = {}
             news['title'] = driver.find_element(By.CSS_SELECTOR, ".hwtfkB").text
             
@@ -110,9 +112,9 @@ def get_news_links(driver: webdriver, url: str):
     driver.get(url)
     
     # To click on see_more button
-    for t in range(5):
+    for t in range(3):
         try:
-            more_button = WebDriverWait(driver, 5).until(
+            more_button = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ .eEklvK")))
             more_button.click()
             print("click")
@@ -123,7 +125,7 @@ def get_news_links(driver: webdriver, url: str):
     
     # To get all news elements
     try:   
-        elements = WebDriverWait(driver, 10).until(
+        elements = WebDriverWait(driver, 15).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, \
                 ".link__CustomNextLink-sc-1r7l32j-0.eoKbWT.BrowseArticleListItemDesktop__WrapperLink-zb6c6m-6.bzMtyO")))
     
