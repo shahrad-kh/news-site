@@ -1,4 +1,5 @@
 import os
+import time
 
 import chromedriver_autoinstaller
 import django
@@ -27,6 +28,7 @@ def create_instance(news_list: list):
     for news in news_list:
         # Try to create new news
         try:
+            print("starting to create instance...")
             new_instance = News.objects.create(
                 title = news['title'],
                 content = news['content'],
@@ -43,8 +45,10 @@ def create_instance(news_list: list):
                     tag = Tag.objects.filter(title=news_tag).first()
                 
                 tags.append(tag)
-                    
+                 
+            print("tags seted...")   
             new_instance.tags.set(tags)
+            print("instance created!")
     
         except:
             continue
@@ -67,6 +71,7 @@ def scrape_news_via_link(driver: webdriver, links: list):
         # To try get news page using link and get news data
         try:
             driver.get(link)
+            time.sleep(0.5)
             news = {}
             news['title'] = driver.find_element(By.CSS_SELECTOR, ".hwtfkB").text
             
@@ -87,6 +92,8 @@ def scrape_news_via_link(driver: webdriver, links: list):
         except:
             continue
     
+    if news_list:
+        print("news_list is not None!")
     return news_list
 
 

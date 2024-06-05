@@ -1,4 +1,5 @@
 import os
+import time
 
 import chromedriver_autoinstaller
 import django
@@ -25,6 +26,7 @@ def create_instance(news_list: list):
     for news in news_list:
         # Try to create new news
         try:
+            print("starting to create instance...")
             new_instance = News.objects.create(
                 title = news['title'],
                 content = news['content'],
@@ -41,8 +43,10 @@ def create_instance(news_list: list):
                     tag = Tag.objects.filter(title=news_tag).first()
                 
                 tags.append(tag)
-                
+            
+            print("tags seted...")   
             new_instance.tags.set(tags)
+            print("instance created!")
         
         except:
             continue 
@@ -65,6 +69,7 @@ def scrape_news_via_link(driver: webdriver, links: list):
         # To try get news page using link and get news data
         try:
             driver.get(link)
+            time.sleep(0.5)
             news = {}
             news['title'] = driver.find_element(By.CSS_SELECTOR, ".hwtfkB").text
             
@@ -84,6 +89,8 @@ def scrape_news_via_link(driver: webdriver, links: list):
         except:
             continue
     
+    if news_list:
+        print("news_list is not None!")
     return news_list
 
 
@@ -102,7 +109,7 @@ def get_news_links(driver: webdriver, url: str):
     driver.get(url)
     
     # To click on see_more button
-    for t in range(7):
+    for t in range(4):
         try:
             more_button = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".eByvXQ .eEklvK")))
@@ -115,7 +122,7 @@ def get_news_links(driver: webdriver, url: str):
     
     # To get all old_news elements
     try:   
-        elements = WebDriverWait(driver, 10).until(
+        elements = WebDriverWait(driver, 15).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, \
                 ".link__CustomNextLink-sc-1r7l32j-0.eoKbWT.BrowseArticleListItemDesktop__WrapperLink-zb6c6m-6.bzMtyO")))
     except Exception as e:
@@ -129,6 +136,8 @@ def get_news_links(driver: webdriver, url: str):
         if str(link).startswith('https://www.zoomit.ir/'):
             links.append(link)
     
+    if links:
+        print("links is not None!")
     return links
 
 
