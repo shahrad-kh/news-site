@@ -81,7 +81,7 @@ def scrape_news_via_link(driver: webdriver, links: list):
                 continue
             
             news['tags'] = [tag.text for tag in driver.find_elements(By.CSS_SELECTOR, ".eMeOeL")]
-            photo = driver.find_element(By.CSS_SELECTOR, ".Dqwcd")
+            photo = driver.find_element(By.CSS_SELECTOR, ".iEkLoM")
             news['photo_link'] = photo.get_attribute('src')
             news['source'] = link
             
