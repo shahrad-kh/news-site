@@ -5,6 +5,7 @@ services:
     build: .
     command: >
       sh -c "export PYTHONPATH=$PYTHONPATH:$${PWD} &&
+             python manage.py makemigrations &&
              python manage.py migrate &&
              apt-get update &&
              apt-get upgrade -y &&
